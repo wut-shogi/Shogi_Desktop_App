@@ -12,7 +12,7 @@ public class MoveSelector : MonoBehaviour
     private GameObject movingPiece;
     private List<Vector2Int> moveLocations;
     private List<GameObject> locationHighlights;
-
+    
     void Start()
     {
         this.enabled = false;
@@ -52,6 +52,10 @@ public class MoveSelector : MonoBehaviour
                 }
                 // Reference Point 3: capture enemy piece here later
                 ExitState();
+            }
+            else if(Input.GetMouseButtonDown(1)) {
+                tileHighlight.SetActive(false);
+                CancelMove();
             }
         }
         else

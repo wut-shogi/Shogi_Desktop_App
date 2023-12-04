@@ -27,12 +27,10 @@ public class SC_MainMenu : MonoBehaviour
     }
     public void Singleplayer()
     {
-        NetworkManager.Singleton.StartHost();
         UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
     public void Multiplayer()
     {
-        NetworkManager.Singleton.StartClient();
         UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
 

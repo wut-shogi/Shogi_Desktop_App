@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PieceType { King };
+public enum PieceType { King,Lance,Gold,Bishop,Knight,Pawn,Silver,Rook };
 
 public abstract class Piece : MonoBehaviour
 {

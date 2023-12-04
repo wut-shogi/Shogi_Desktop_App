@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Board : NetworkBehaviour
+public class Board : MonoBehaviour
 {
     public Material defaultMaterial;
     public Material selectedMaterial;
@@ -9,7 +9,7 @@ public class Board : NetworkBehaviour
     public GameObject AddPiece(GameObject piece, int col, int row)
     {
         Vector2Int gridPoint = Geometry.GridPoint(col, row);
-        GameObject newPiece = Instantiate(piece, Geometry.PointFromGrid(gridPoint), Quaternion.identity, gameObject.transform);
+        GameObject newPiece = Instantiate(piece, Geometry.PointFromGrid(gridPoint), Quaternion.identity, this.transform);
         return newPiece;
     }
 
