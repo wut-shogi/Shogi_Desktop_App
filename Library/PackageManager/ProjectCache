@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638333939087578618
-    m_Hash: 3789159345
+      ticks: 638377272852464624
+    m_Hash: 2892353
   m_LockFileStatus:
     m_FilePath: D:/Unity/Shogi/Shogi/Shogi_Desktop_App/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638333939088424515
-    m_Hash: 2894628574
+      ticks: 638377272853287702
+    m_Hash: 1081495423
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -22,6 +22,60 @@ m_LocalPackages:
 m_ProjectPath: D:/Unity/Shogi/Shogi/Shogi_Desktop_App/Packages
 m_EditorVersion: 2022.3.4f1 (35713cd46cd7)
 m_ResolvedPackages:
+- packageId: com.github-glitchenzo.nugetforunity@https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity
+  testable: 0
+  isDirectDependency: 1
+  version: 4.0.2
+  source: 5
+  resolvedPath: D:\Unity\Shogi\Shogi\Shogi_Desktop_App\Library\PackageCache\com.github-glitchenzo.nugetforunity@441f6df275
+  assetPath: Packages/com.github-glitchenzo.nugetforunity
+  name: com.github-glitchenzo.nugetforunity
+  displayName: NuGetForUnity
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: 
+  description: A NuGet Package Manager for Unity
+  status: 0
+  errors: []
+  versions:
+    all: []
+    compatible: []
+    recommended: 
+    deprecated: []
+  dependencies: []
+  resolvedDependencies: []
+  keywords:
+  - nuget
+  - unity
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 0
+  documentationUrl: https://github.com/GlitchEnzo/NuGetForUnity
+  hasRepository: 0
+  repository:
+    type: 
+    url: 
+    revision: 
+    path: 
+  unityLifecycle:
+    version: 
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
 - packageId: com.unity.collab-proxy@2.0.5
   testable: 0
   isDirectDependency: 1
@@ -290,6 +344,7 @@ m_ResolvedPackages:
     - 2.0.0-pre.2
     - 2.0.0-pre.3
     - 2.0.0-pre.5
+    - 2.1.0
     compatible:
     - 1.0.0
     - 1.1.0
@@ -407,10 +462,14 @@ m_ResolvedPackages:
     - 1.5.1
     - 1.5.2
     - 1.6.0
+    - 1.7.0
+    - 1.7.1
     compatible:
     - 1.5.1
     - 1.5.2
     - 1.6.0
+    - 1.7.0
+    - 1.7.1
     recommended: 1.5.2
     deprecated: []
   dependencies:
@@ -2912,6 +2971,12 @@ m_ResolvedPackages:
   errors: []
   versions:
     all:
+    - 0.1.6-preview.2
+    - 1.0.0-preview.1
+    - 1.10.0-preview.1
+    - 1.10.1-preview.1
+    - 1.10.1
+    - 1.10.2
     - 1.11.4
     compatible:
     - 1.11.4
@@ -2930,7 +2995,7 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 0
+  datePublishedTicks: 637852971930000000
   documentationUrl: 
   hasRepository: 1
   repository:
@@ -3002,6 +3067,7 @@ m_ResolvedPackages:
     - 1.3.3
     - 1.3.4
     - 1.4.0
+    - 1.4.1
     - 2.0.0-exp.6
     - 2.0.0-exp.7
     - 2.0.0-exp.8
@@ -3014,9 +3080,11 @@ m_ResolvedPackages:
     - 2.0.1
     - 2.0.2
     - 2.1.0
+    - 2.2.1
     compatible:
     - 1.3.4
     - 1.4.0
+    - 1.4.1
     - 2.0.0-exp.6
     - 2.0.0-exp.7
     - 2.0.0-exp.8
@@ -3029,6 +3097,7 @@ m_ResolvedPackages:
     - 2.0.1
     - 2.0.2
     - 2.1.0
+    - 2.2.1
     recommended: 1.3.4
     deprecated: []
   dependencies:
@@ -3172,6 +3241,21 @@ m_ResolvedPackages:
   errors: []
   versions:
     all:
+    - 1.0.0-preview.2
+    - 1.0.0-preview.3
+    - 1.0.0-preview.4
+    - 1.0.1-preview.1
+    - 1.1.2
+    - 2.0.0-preview
+    - 2.0.0-preview.1
+    - 2.0.0-preview.2
+    - 2.0.0
+    - 2.0.1-preview.1
+    - 2.0.2
+    - 3.0.1
+    - 3.0.2
+    - 3.1.0
+    - 3.2.0
     - 3.2.1
     compatible:
     - 3.2.1
@@ -3190,7 +3274,7 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 0
+  datePublishedTicks: 638186318800000000
   documentationUrl: 
   hasRepository: 1
   repository:
@@ -3286,6 +3370,9 @@ m_ResolvedPackages:
     - 2.2.0
     - 2.2.1
     - 2.3.0-exp.1
+    - 2.3.0-pre.3
+    - 2.4.0-exp.2
+    - 2.4.0-pre.2
     compatible:
     - 1.2.4
     - 1.3.1
@@ -3301,6 +3388,7 @@ m_ResolvedPackages:
     - 2.2.0
     - 2.2.1
     - 2.3.0-exp.1
+    - 2.3.0-pre.3
     recommended: 1.2.4
     deprecated: []
   dependencies:
@@ -3505,11 +3593,13 @@ m_ResolvedPackages:
     - 3.0.24
     - 3.0.25
     - 3.0.26
+    - 3.0.27
     compatible:
     - 3.0.24
     - 3.0.25
     - 3.0.26
-    recommended: 3.0.26
+    - 3.0.27
+    recommended: 3.0.27
     deprecated: []
   dependencies:
   - name: com.unity.ext.nunit
@@ -3811,6 +3901,8 @@ m_ResolvedPackages:
     - 1.3.7
     - 1.3.8
     - 1.3.9
+    - 1.4.0
+    - 1.4.1
     - 2.0.1-exp.1
     - 2.0.1-exp.2
     - 2.0.1-pre.12
@@ -3826,6 +3918,8 @@ m_ResolvedPackages:
     - 1.3.7
     - 1.3.8
     - 1.3.9
+    - 1.4.0
+    - 1.4.1
     - 2.0.1-exp.1
     - 2.0.1-exp.2
     - 2.0.1-pre.12
@@ -4124,11 +4218,15 @@ m_ResolvedPackages:
     - 1.8.7
     - 1.8.8
     - 1.8.9
+    - 1.8.10
+    - 1.8.11
     compatible:
     - 1.8.7
     - 1.8.8
     - 1.8.9
-    recommended: 1.8.9
+    - 1.8.10
+    - 1.8.11
+    recommended: 1.8.11
     deprecated: []
   dependencies:
   - name: com.unity.mathematics

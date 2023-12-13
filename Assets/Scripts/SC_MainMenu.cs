@@ -33,6 +33,10 @@ public class SC_MainMenu : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
+    public void GoToMainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+    }
 
     public void CreditsButton()
     {

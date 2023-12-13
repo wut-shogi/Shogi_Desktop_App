@@ -17,7 +17,7 @@ public class CounterUpdate : MonoBehaviour
     void Update()
     {
         var s = gameObject.GetComponent<TMP_Text>();
-        var  p = gameObject.GetComponentInParent<UIControler>();
+        var p = gameObject.GetComponentInParent<UIControler>();
         s.text = GameManager.instance.hand.Where(x=>x==p.type).Count().ToString();
     }
 }

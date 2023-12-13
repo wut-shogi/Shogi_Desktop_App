@@ -5,7 +5,7 @@ using System.Linq;
 using UniJSON;
 using Unity.Netcode;
 using UnityEngine;
-
+using ShogiEngineDllTests;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     private Camera mainCamera = default;
     public Player player1;
     public Player player2;
-
+    public List<(Vector2Int, Vector2Int)> moves;
     public GameObject King;
     public GameObject Knight;
     public GameObject Rook;
@@ -44,7 +44,11 @@ public class GameManager : MonoBehaviour
 
         currentPlayer = player1;
         otherPlayer = player2;
-        ConvertFromUSI("lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1");
+        var fen = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b -";
+        moves =  ShogiEngineInterface.GetAllMoves(fen);
+
+        moves = moves.Concat(ShogiEngineInterface.GetAllMoves("lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w -")).ToList();
+        ConvertFromUSI(fen);
         rotateCamera = player1 is HumanPlayer && player2 is HumanPlayer;
     }
 
@@ -53,13 +57,16 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    public void AddPiece(GameObject prefab, Player player, int col, int row)
+    public void AddPiece(GameObject prefab, Player player, int col, int row,bool promoted = false)
     {
         GameObject pieceObject = board.AddPiece(prefab, col, row);
         if(player.forward==-1)
         {
             pieceObject.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
+        pieceObject.GetComponent<Piece>().player = player;
+        if (promoted)
+            pieceObject.GetComponent<Piece>().Promote(pieceObject);
         player.pieces.Add(pieceObject);
         pieces[col, row] = pieceObject;
     }
@@ -129,9 +136,12 @@ public class GameManager : MonoBehaviour
     }
     public void NextPlayer() 
     {
+        moves = ShogiEngineInterface.GetAllMoves(convert2FEN());
         Player tempPlayer = currentPlayer;
         currentPlayer = otherPlayer;
         otherPlayer = tempPlayer;
+        var o = ShogiEngineInterface.GetAllMoves(convert2FEN());
+        moves = moves.Concat( ShogiEngineInterface.GetAllMoves(convert2FEN())).ToList();
     }
     public void SelectPiece(GameObject piece)
     {
@@ -153,6 +163,7 @@ public class GameManager : MonoBehaviour
         pieces[startGridPoint.x, startGridPoint.y] = null;
         pieces[gridPoint.x, gridPoint.y] = piece;
         board.MovePiece(piece, gridPoint);
+        Promote(piece,gridPoint);
     }
     public void CapturePieceAt(Vector2Int gridPoint)
     {
@@ -162,10 +173,21 @@ public class GameManager : MonoBehaviour
         SendToHand(pieceToCapture);
         board.RemovePiece(pieceToCapture);
     }
+
+    public void Promote(GameObject piece, Vector2Int gridPoint)
+    {
+        Piece p = piece.GetComponent<Piece>();
+        if (currentPlayer == player1 && gridPoint.y >= 6)
+            p.Promote(piece);
+        else if (currentPlayer == player2 && gridPoint.y < 3)
+            p.Promote(piece);
+    }
     public void SendToHand(GameObject piece)
     {
         
         char c = GameObject2Char(piece);
+        if(c=='k')
+            UnityEngine.SceneManagement.SceneManager.LoadScene("WinScreen");
         if (currentPlayer == player2) c = char.ToUpper(c);
         hand.Add(c);
     }
@@ -236,7 +258,7 @@ public class GameManager : MonoBehaviour
 
         var parseds = FENstring.Split(' ');
         var rows = parseds[0].Split('/');
-
+        bool promoted = false;
         for(int i = 0; i < 9; i++)
         {
             int a = 0;
@@ -246,17 +268,116 @@ public class GameManager : MonoBehaviour
                 {
                     a += b;
                 }
+                else if (rows[i][j] == '+')
+                {
+                    promoted = true;
+                }
                 else
                 {
                     var s = d[char.ToLower(rows[i][j])];
                     var x = char.ToLower(rows[i][j]);
-                    AddPiece(d[char.ToLower(rows[i][j])], char.IsLower(rows[i][j]) ? player1 : player2, a, i);
+                    AddPiece(d[char.ToLower(rows[i][j])], char.IsLower(rows[i][j]) ? player1 : player2, a, i,promoted);
+                     promoted = false;
                     a++;
                 }
             }
         }
-        currentPlayer = parseds[1] != "w"?player1 : player2;
-        otherPlayer = parseds[1] == "w" ? player1 : player2;
+        string parsedhand = "";
+        int n = 1;
+        int t;
+        foreach(var e in parseds[2])
+        {
+            if (!int.TryParse(e.ToString(),out t))
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    parsedhand += e;
+                }
+                n = 1;
+            }
+            else
+            {
+                n = t;
+            }
+        }
+        hand = parsedhand.ToList();
+        currentPlayer = parseds[1] == "w"? player1 : player2;
+        otherPlayer = parseds[1] != "w" ? player1 : player2;
+    }
+    public string convert2FEN()
+    {
+        Dictionary<Char, GameObject> d = new Dictionary<char, GameObject>() {
+
+            {'k', King },
+            {'r', Rook },
+            {'b', Bishop },
+            {'g', Gold},
+            {'s', Silver },
+            {'l', Lance },
+            {'n', Knight },
+            {'p', Pawn },
+            
+         
+            
+           
+            
+        };
+        string fen = "";
+        for(int i = 0; i < 9; i++)
+        {
+            int a = 0;
+            for(int j = 0;j < 9; j++)
+            {
+                if (pieces[j, i] == null) { 
+                    a++;
+                    continue;
+                }
+                var x = d.FirstOrDefault(x => x.Value.GetComponent<Piece>().type == pieces[j, i].GetComponent<Piece>().type);
+                var z = x.Key;
+                
+                if(a!=0)
+                    fen += a;
+                a = 0;
+                fen += pieces[j, i].GetComponent<Piece>().promoted ? "+" : "";
+                fen += (pieces[j, i].GetComponent<Piece>().player)==player1? char.ToLower(z):char.ToUpper(z);
+            }
+            fen += "/";
+        }
+        fen = fen.Remove(fen.Length - 1);
+
+        fen += " ";
+        fen += currentPlayer == player1 ? "w" : "b";
+        fen += " ";
+        if (hand.Count() == 0)
+            fen += "-";
+        foreach (var piecetype in d)
+        {
+            char type = char.ToUpper(piecetype.Key);
+            int handcount = hand.Where(x => x == type).Count();
+            if (handcount > 0)
+            {
+                if (handcount > 1)
+                {
+                    fen += handcount.ToString();
+                }
+                fen += type;
+            }
+        }
+
+        foreach(var piecetype in d)
+        {
+            int handcount = hand.Where(x => x == piecetype.Key).Count();
+            if (handcount > 0)
+            {
+                if (handcount > 1)
+                {
+                    fen += handcount.ToString();
+                }
+                fen += piecetype.Key;
+            }
+        }
+       
+        return fen;
     }
 
 }

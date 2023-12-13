@@ -59,6 +59,7 @@ public class TileSelector : MonoBehaviour
 
                 if(gridPoint != current)
                 {
+                    current= gridPoint;
                     foreach (GameObject highlight in locationHighlights)
                     {
                         Destroy(highlight);
