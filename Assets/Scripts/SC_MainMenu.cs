@@ -23,15 +23,20 @@ public class SC_MainMenu : MonoBehaviour
     }
     public void Sandbox()
     {
+
+        PlayerPasser.instance.player1 = new HumanPlayer("player1", true);
+        PlayerPasser.instance.player2 = new HumanPlayer("player2", false);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
     public void Singleplayer()
     {
+        PlayerPasser.instance.player1 = new HumanPlayer("player1", true);
+        PlayerPasser.instance.player2 = new BotPlayer("Bot", false);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
     public void Multiplayer()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MultiplayerPicker");
     }
     public void GoToMainMenu()
     {

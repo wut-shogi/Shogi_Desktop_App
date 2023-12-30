@@ -26,10 +26,8 @@ public class TileSelector : MonoBehaviour
         
         tileHighlight.SetActive(false);
     }
-    bool pause = false;
     void Update()
     {
-        if(pause) return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;

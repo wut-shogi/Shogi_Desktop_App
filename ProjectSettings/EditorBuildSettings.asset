@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WinScreen.unity
     guid: 89f7a5ba65550b24dbcce68d78e98eab
+  - enabled: 1
+    path: Assets/Scenes/MultiplayerPicker.unity
+    guid: 6a8165107d2c6f748a363f8917df7883
   m_configObjects: {}

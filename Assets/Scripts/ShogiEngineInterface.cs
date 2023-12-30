@@ -12,6 +12,10 @@ namespace ShogiEngineDllTests
     public class ShogiEngineInterface
     {
         [DllImport("shogi_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void cleanup();
+        [DllImport("shogi_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool init();
+        [DllImport("shogi_engine.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.BStr)]
         private static extern string getAllLegalMoves(string SFENstring);
 
@@ -19,14 +23,25 @@ namespace ShogiEngineDllTests
         [return: MarshalAs(UnmanagedType.BStr)]
         private static extern string getBestMove(string SFENstring, uint maxDepth, uint maxTime);
 
-
+        public static void CleanUp()
+        {
+            cleanup();
+        }
+        public static bool Init()
+        {
+            return init();
+        }
+        static public (Vector2Int, Vector2Int) Move2Coord(string e)
+        {
+            return (new Vector2Int(9 - (e[0] - '0'), e[1] - 'a'), new Vector2Int(9 - (e[2] - '0'), e[3] - 'a'));
+        }
         public static List<(Vector2Int,Vector2Int)> GetAllMoves(string SFENstring)
         {
             string allMovesString = getAllLegalMoves(SFENstring);
             string[] movestrings = allMovesString.ToString().Split('|');
             List<(Vector2Int, Vector2Int)> v = new List<(Vector2Int, Vector2Int)> ();
             foreach(string e in movestrings) {
-                v.Add((new Vector2Int(9-(e[0] - '0'), e[1]-'a'), new Vector2Int(9 - (e[2] - '0'), e[3] - 'a')));
+                v.Add(Move2Coord(e));
             }
 
             return v;
@@ -34,7 +49,7 @@ namespace ShogiEngineDllTests
 
         public static string GetBestMove(string SFENstring)
         {
-            return getBestMove(SFENstring, 1, 1);
+            return getBestMove(SFENstring, 5, 1);
         }
     }
 }

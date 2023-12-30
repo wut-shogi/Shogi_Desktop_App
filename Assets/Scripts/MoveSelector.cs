@@ -41,15 +41,7 @@ public class MoveSelector : MonoBehaviour
                     return;
                 }
 
-                if (GameManager.instance.PieceAtGrid(gridPoint) == null)
-                {
-                    GameManager.instance.Move(movingPiece, gridPoint);
-                }
-                else
-                {
-                    GameManager.instance.CapturePieceAt(gridPoint);
-                    GameManager.instance.Move(movingPiece, gridPoint);
-                }
+                GameManager.instance.MovePiece(movingPiece, gridPoint);
                 // Reference Point 3: capture enemy piece here later
                 ExitState();
             }
