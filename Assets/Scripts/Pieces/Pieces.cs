@@ -15,10 +15,11 @@ public abstract class Piece : MonoBehaviour
     
     }
 
+    public bool isPromotable = true;
     public void Promote(GameObject piece)
     {
-        if (promoted) 
-            return;
+        if (promoted) return;
+        if (!isPromotable) return;
         promoted = true;
         piece.transform.Rotate(new Vector3(0, 0, 180));
     }

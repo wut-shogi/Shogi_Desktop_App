@@ -9,6 +9,7 @@ public class PlayerPasser : MonoBehaviour
     public static PlayerPasser instance;
     public HubConnection connection1 = null!;
     public ServerPlayer hostPlayer = null!;
+    public Player Winner;
     public Player player1 = new HumanPlayer("player1", true);
     public Player player2 = new HumanPlayer("player2", true);
     public GameDTO game = null!;

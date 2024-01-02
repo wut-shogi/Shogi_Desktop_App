@@ -3,5 +3,7 @@ using UnityEngine;
 
 class Gold : Piece
 {
-    Gold() { }
+    Gold() {
+        isPromotable = false;
+    }
 }

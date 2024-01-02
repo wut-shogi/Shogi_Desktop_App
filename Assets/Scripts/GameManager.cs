@@ -9,11 +9,15 @@ using ShogiEngineDllTests;
 using Microsoft.AspNetCore.SignalR.Client;
 using ShogiServer.WebApi.Model;
 using System.Text;
+using System.Threading;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public bool update = false;
+    public bool updateMove = false;
+    string move = "";
     public string fenBoard = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b -";
     public Board board;
     private GameObject[,] pieces;
@@ -40,11 +44,12 @@ public class GameManager : MonoBehaviour
         instance = this;
         ShogiEngineInterface.CleanUp();
         bool init = ShogiEngineInterface.Init();
+        if(PlayerPasser.instance.connection1 != null) { 
         PlayerPasser.instance.connection1.On<GameDTO>("SendGameState", response =>
         {
             GameManager.instance.fenBoard = response.BoardState;
             GameManager.instance.update = true;
-        });
+        });}
     }
     // Start is called before the first frame update
     void Start()
@@ -55,11 +60,11 @@ public class GameManager : MonoBehaviour
         player1 = PlayerPasser.instance.player1;
         player2 = PlayerPasser.instance.player2; 
 
-        currentPlayer = player1;
-        otherPlayer = player2;
+        currentPlayer = player2;
+        otherPlayer = player1;
         BoardFromFen(fenBoard);
         rotateCamera = player1 is HumanPlayer && player2 is HumanPlayer;
-        MakeMove();
+        StartMakeMove();
     }
 
     public void BoardFromFen(string fen)
@@ -80,6 +85,11 @@ public class GameManager : MonoBehaviour
         {
             BoardFromFen(fenBoard);
             update = false;
+        }
+        if(updateMove)
+        {
+            Move2Board(move);
+            updateMove = false;
         }
         
     }
@@ -160,11 +170,19 @@ public class GameManager : MonoBehaviour
 
         return locations;
     }
-    public void MakeMove()
-    {
+
+    public void StartMakeMove()
+    { 
+        
         string fen = convert2FEN();
-        fen = currentPlayer.MakeMove(fen);
-        Move2Board(fen);
+        UnityEngine.Debug.Log("current board " + fen);
+        if (ShogiEngineInterface.GetAllMoves(fen).Count == 0)
+            Win();
+        new Thread(() => { 
+            move = currentPlayer.MakeMove(fen);
+            updateMove = true;
+        }).Start();
+
     }
     public void NextPlayer() 
     {
@@ -174,7 +192,7 @@ public class GameManager : MonoBehaviour
         otherPlayer = tempPlayer;
         var o = ShogiEngineInterface.GetAllMoves(convert2FEN());
         moves = moves.Concat( ShogiEngineInterface.GetAllMoves(convert2FEN())).ToList();
-        MakeMove();
+        StartMakeMove();
     }
     public void SelectPiece(GameObject piece)
     {
@@ -226,6 +244,11 @@ public class GameManager : MonoBehaviour
             p.Promote(piece);
         else if (currentPlayer == player2 && gridPoint.y < 3)
             p.Promote(piece);
+    }
+    private void Win()
+    {
+        PlayerPasser.instance.Winner = currentPlayer;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("WinScreen");
     }
     public void SendToHand(GameObject piece)
     {
@@ -286,6 +309,38 @@ public class GameManager : MonoBehaviour
         hand.Remove(pieceType);
         AddPiece(d[char.ToLower(pieceType)], currentPlayer, gridPoint.x, gridPoint.y);
     }
+    public void LogBoard()
+    {
+
+        Dictionary<Char, GameObject> d = new Dictionary<char, GameObject>() {
+
+            {'k', King },
+            {'r', Rook },
+            {'p', Pawn },
+            {'l', Lance },
+            {'n', Knight },
+            {'s', Silver },
+            {'g', Gold},
+            {'b', Bishop }
+        };
+        string s = "Board:\n";
+        for(int i = 0; i < 9; i++) { 
+            for(int j = 0; j < 9; j++)
+            {
+                if (pieces[i, j]== null)
+                {
+                    s += " 0 ";
+                    continue;
+                }
+                var x = d.FirstOrDefault(x => x.Value.GetComponent<Piece>().type == pieces[i,j].GetComponent<Piece>().type);
+                var z = x.Key;
+                s += $" {z} ";
+            }
+            s += "\n";
+        }
+        UnityEngine.Debug.Log(s);
+    }
+
     public void ConvertFromUSI(string FENstring)
     {
         foreach(var e in pieces)
@@ -351,6 +406,7 @@ public class GameManager : MonoBehaviour
         hand = parsedhand.ToList();
         currentPlayer = parseds[1] == "w"? player1 : player2;
         otherPlayer = parseds[1] != "w" ? player1 : player2;
+        LogBoard();
     }
     public string convert2FEN()
     {
@@ -384,6 +440,8 @@ public class GameManager : MonoBehaviour
                 fen += pieces[j, i].GetComponent<Piece>().promoted ? "+" : "";
                 fen += (pieces[j, i].GetComponent<Piece>().player)==player1? char.ToLower(z):char.ToUpper(z);
             }
+            if (a != 0)
+                fen += a;
             fen += "/";
         }
         fen = fen.Remove(fen.Length - 1);
@@ -437,6 +495,7 @@ public class GameManager : MonoBehaviour
         else if(move.Any(char.IsUpper))
         {
             var m = ShogiEngineInterface.Move2Coord(move);
+            UnityEngine.Debug.Log($"drop {move} {m.Item2.x} {m.Item2.y}");
             GameManager.instance.DropPiece(move.Where(x => char.IsUpper(x)).First(), m.Item2);
         }
         else

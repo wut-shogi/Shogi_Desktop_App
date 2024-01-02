@@ -3,6 +3,8 @@ using UnityEngine;
 
 class King : Piece
 {
-    King() { }
+    King() {
+        isPromotable = false;
+    }
    
 }

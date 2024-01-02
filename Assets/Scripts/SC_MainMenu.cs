@@ -21,12 +21,16 @@ public class SC_MainMenu : MonoBehaviour
         CreditsMenu.SetActive(false);
         PlayMenu.SetActive(true);
     }
-    public void Sandbox()
+    public void HotSeat()
     {
 
         PlayerPasser.instance.player1 = new HumanPlayer("player1", true);
         PlayerPasser.instance.player2 = new HumanPlayer("player2", false);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
+    }
+    public void Sandbox()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameOptions");
     }
     public void Singleplayer()
     {

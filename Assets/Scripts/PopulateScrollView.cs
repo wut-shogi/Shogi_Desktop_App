@@ -47,7 +47,7 @@ public class PopulateScrollView : MonoBehaviour
 
         connection1 = new HubConnectionBuilder()
                  .WithUrl(
-                     "https://localhost:7080/shogi-hub").WithKeepAliveInterval(new TimeSpan(10)).WithAutomaticReconnect()
+                     "https://shogiserverwebapi20231230201349.azurewebsites.net/shogi-hub").WithKeepAliveInterval(new TimeSpan(10)).WithAutomaticReconnect()
                  .Build();
         connection1.On<ServerPlayer>("SendPlayer", response => {
             PlayerPasser.instance.hostPlayer = response;
