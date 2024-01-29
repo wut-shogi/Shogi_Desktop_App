@@ -35,10 +35,11 @@ namespace ShogiEngineDllTests
 
         static public (Vector2Int, Vector2Int) Move2Coord(string e)
         {
-            return (new Vector2Int(9 - (e[0] - '0'), e[1] - 'a'), new Vector2Int(9 - (e[2] - '0'), e[3] - 'a'));
+            return (new Vector2Int( (e[0] - '1'), e[1] - 'a'), new Vector2Int((e[2] - '1'), e[3] - 'a'));
         }
         public static List<(Vector2Int, Vector2Int)> GetAllMoves(string SFENstring)
         {
+            try { 
             var outputBuffer = new byte[4096];
             int size = getAllLegalMoves(SFENstring, outputBuffer);
             string movesString = Encoding.UTF8.GetString(outputBuffer, 0, size);
@@ -49,7 +50,11 @@ namespace ShogiEngineDllTests
                 v.Add(Move2Coord(e));
             }
 
-            return v;
+            return v;}catch(Exception e)
+            {
+                GameManager.instance.win = true;
+                return new List<(Vector2Int, Vector2Int)>();
+            }
         }
 
         public static string GetBestMove(string SFENstring, uint maxDepth=1000, uint maxTime=1000, bool useGPU = true)

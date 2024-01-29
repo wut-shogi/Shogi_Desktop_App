@@ -1,4 +1,5 @@
 using ShogiEngineDllTests;
+using System.Collections.Generic;
 
 class BotPlayer : Player
 {
@@ -9,6 +10,6 @@ class BotPlayer : Player
 
     public override string MakeMove(string fen)
     {
-        return ShogiEngineInterface.GetBestMove(fen);
+        return ShogiEngineInterface.GetBestMove(fen,maxTime:uint.Parse(PlayerPasser.instance.configuration.GetValueOrDefault("MaxTimeOnMove")));
     }
 }

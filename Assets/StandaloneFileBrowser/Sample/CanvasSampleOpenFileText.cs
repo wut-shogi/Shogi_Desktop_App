@@ -39,7 +39,7 @@ public class CanvasSampleOpenFileText : MonoBehaviour, IPointerDownHandler {
 
     public void AddBot()
     {
-        Player p = new BotPlayer("Engine", player1);
+        Player p = new BotPlayer("Bot", player1);
         if (player1)
             PlayerPasser.instance.player1 = p;
         else

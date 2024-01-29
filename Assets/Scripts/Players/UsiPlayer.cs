@@ -3,6 +3,8 @@ using System.Diagnostics;
 using Unity.VisualScripting;
 using System.Threading;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 class UsiPlayer : Player
 {
@@ -35,6 +37,7 @@ class UsiPlayer : Player
     void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
     {
         UnityEngine.Debug.Log(outLine.Data);
+        
         if(state == EngineState.Initializing)
         {
             if(outLine.Data == "usiok") {
@@ -71,7 +74,7 @@ class UsiPlayer : Player
     {
         move = "";
         state = EngineState.Calculating;
-        int t = 1000;
+        int t = int.Parse(PlayerPasser.instance.configuration.GetValueOrDefault("MaxTimeOnMove"));
         process.StandardInput.Write("position " + fen + "\n");
         process.StandardInput.Write("go movetime " + t+"\n");
         while(state!= EngineState.Ready)

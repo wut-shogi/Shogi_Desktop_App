@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public bool update = false;
     public bool updateMove = false;
+    public bool win = false;
     string move = "";
     public string fenBoard = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b -";
     public Board board;
@@ -44,11 +45,15 @@ public class GameManager : MonoBehaviour
         instance = this;
         ShogiEngineInterface.CleanUp();
         bool init = ShogiEngineInterface.Init();
-        if(PlayerPasser.instance.connection1 != null) { 
+       
+            if (PlayerPasser.instance.player1 is HumanPlayer &&PlayerPasser.instance.player2 is not HumanPlayer &&!bool.Parse(PlayerPasser.instance.configuration.GetValueOrDefault("StaticCamera")))
+                mainCamera.GetComponent<CameraRotator>().rotate(180); 
+        if(PlayerPasser.instance.connection1 != null) {
         PlayerPasser.instance.connection1.On<GameDTO>("SendGameState", response =>
         {
             GameManager.instance.fenBoard = response.BoardState;
             GameManager.instance.update = true;
+            
         });}
     }
     // Start is called before the first frame update
@@ -81,15 +86,21 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (win)
+        {
+            Win();
+        }
         if (update)
         {
-            BoardFromFen(fenBoard);
             update = false;
+            BoardFromFen(fenBoard);
+            
         }
         if(updateMove)
         {
-            Move2Board(move);
             updateMove = false;
+            Move2Board(move);
+            
         }
         
     }
@@ -191,7 +202,7 @@ public class GameManager : MonoBehaviour
         currentPlayer = otherPlayer;
         otherPlayer = tempPlayer;
         var o = ShogiEngineInterface.GetAllMoves(convert2FEN());
-        moves = moves.Concat( ShogiEngineInterface.GetAllMoves(convert2FEN())).ToList();
+        moves = moves.Concat(o).ToList();
         StartMakeMove();
     }
     public void SelectPiece(GameObject piece)
@@ -248,6 +259,7 @@ public class GameManager : MonoBehaviour
     private void Win()
     {
         PlayerPasser.instance.Winner = currentPlayer;
+        ShogiEngineInterface.CleanUp();
         UnityEngine.SceneManagement.SceneManager.LoadScene("WinScreen");
     }
     public void SendToHand(GameObject piece)
@@ -306,8 +318,17 @@ public class GameManager : MonoBehaviour
             {'g', Gold},
             {'b', Bishop }
         };
+        string o = "";
+        foreach (var e in hand)
+            o+=(e);
+        Debug.Log(pieceType);
+        Debug.Log("pre " + o);
         hand.Remove(pieceType);
         AddPiece(d[char.ToLower(pieceType)], currentPlayer, gridPoint.x, gridPoint.y);
+         o = "";
+        foreach (var e in hand)
+            o+=(e);
+        Debug.Log("post " + o);
     }
     public void LogBoard()
     {
@@ -379,7 +400,7 @@ public class GameManager : MonoBehaviour
                 {
                     var s = d[char.ToLower(rows[i][j])];
                     var x = char.ToLower(rows[i][j]);
-                    AddPiece(d[char.ToLower(rows[i][j])], char.IsLower(rows[i][j]) ? player1 : player2, a, i,promoted);
+                    AddPiece(d[char.ToLower(rows[i][j])], char.IsLower(rows[i][j]) ? player1 : player2, 8 - a, i,promoted);
                      promoted = false;
                     a++;
                 }
@@ -417,15 +438,15 @@ public class GameManager : MonoBehaviour
             {'b', Bishop },
             {'g', Gold},
             {'s', Silver },
-            {'l', Lance },
             {'n', Knight },
+            {'l', Lance },
             {'p', Pawn },
         };
         string fen = "";
         for(int i = 0; i < 9; i++)
         {
             int a = 0;
-            for(int j = 0;j < 9; j++)
+            for(int j = 8;j >=0; j--)
             {
                 if (pieces[j, i] == null) { 
                     a++;
@@ -496,7 +517,8 @@ public class GameManager : MonoBehaviour
         {
             var m = ShogiEngineInterface.Move2Coord(move);
             UnityEngine.Debug.Log($"drop {move} {m.Item2.x} {m.Item2.y}");
-            GameManager.instance.DropPiece(move.Where(x => char.IsUpper(x)).First(), m.Item2);
+            var p= move.Where(x => char.IsUpper(x)).First();
+            GameManager.instance.DropPiece(currentPlayer==player1?char.ToLower(p):char.ToUpper(p), m.Item2);
         }
         else
         {
